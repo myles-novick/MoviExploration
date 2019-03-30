@@ -5,10 +5,10 @@
  * @param _data						-- the  
  */
 
-Timeline = function(_parentElement, _data){
+Timeline = function(_parentElement, _data, _colorScale){
     this.parentElement = _parentElement;
     this.data = _data;
-
+    this.colorScale = _colorScale;
     // No data wrangling, no update sequence
     this.displayData = this.data;
 
@@ -53,7 +53,7 @@ Timeline.prototype.initVis = function(){
     vis.area = d3.area()
         .x(function(d) { return vis.x(d.Year); })
         .y0(vis.height)
-        .y1(function(d) { return vis.y(d.Expenditures); });
+        .y1(function(d) { return vis.y(d.Revenue); });
 
     // Draw area by using the path generator
     vis.svg.append("path")

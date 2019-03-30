@@ -1,33 +1,38 @@
-StackedAreaChart = function(_parentElement, _data){
+StackedAreaChart = function(_parentElement, _data, _colorScale){
 	this.parentElement = _parentElement;
     this.data = _data;
+    this.colorScale = _colorScale;
     this.displayData = [];
     this.initVis();
 }
 
-StackedAreaChart.prototype.initVis = function() {
-    var vis = this;
+StackedAreaChart.prototype.initVis = function(){
+	var vis = this;
 
 	vis.margin = { top: 40, right: 0, bottom: 60, left: 60 };
 
 	vis.width = 800 - vis.margin.left - vis.margin.right,
     vis.height = 400 - vis.margin.top - vis.margin.bottom;
 
+
+  // SVG drawing area
 	vis.svg = d3.select("#" + vis.parentElement).append("svg")
 	    .attr("width", vis.width + vis.margin.left + vis.margin.right)
 	    .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
        .append("g")
 	    .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+	// TO-DO: Overlay with path clipping
     vis.svg.append("defs").append("clipPath")
         .attr("id", "clip")
         .append("rect")
         .attr("width", vis.width)
         .attr("height", vis.height);
 
+    // Scales and axes
     vis.x = d3.scaleTime()
         .range([0, vis.width])
-        .domain(d3.extent(vis.data, function(d) { return d.release_date; }));
+        .domain(d3.extent(vis.data, function(d) { return d.Year; }));
 
     vis.y = d3.scaleLinear()
         .range([vis.height, 0]);
@@ -47,7 +52,7 @@ StackedAreaChart.prototype.initVis = function() {
 
 
     // TO-DO: Initialize stack layout
-    var dataCategories = colorScale.domain();
+    var dataCategories = vis.colorScale.domain();
     var stack = d3.stack().keys(dataCategories);
     vis.stackedData = stack(vis.data)
 
@@ -55,7 +60,7 @@ StackedAreaChart.prototype.initVis = function() {
 
     // TO-DO: Stacked area layout
     vis.area = d3.area()
-    .x(function(d) { return vis.x(d.data.release_date); })
+    .x(function(d) { return vis.x(d.data.Year); })
     .y0(function(d) { return vis.y(d[0]); })
     .y1(function(d) { return vis.y(d[1]); });
 
@@ -67,4 +72,69 @@ StackedAreaChart.prototype.initVis = function() {
 
 	// TO-DO: (Filter, aggregate, modify data)
     vis.wrangleData();
+}
+
+
+
+/*
+ * Data wrangling
+ */
+
+StackedAreaChart.prototype.wrangleData = function(){
+	var vis = this;
+
+	// In the first step no data wrangling/filtering needed
+	vis.displayData = vis.stackedData;
+
+	// Update the visualization
+    vis.updateVis();
+}
+
+
+
+/*
+ * The drawing function - should use the D3 update sequence (enter, update, exit)
+ * Function parameters only needed if different kinds of updates are needed
+ */
+
+StackedAreaChart.prototype.updateVis = function(){
+	var vis = this;
+
+	// Update domain
+	// Get the maximum of the multi-dimensional array or in other words, get the highest peak of the uppermost layer
+	vis.y.domain([0, d3.max(vis.displayData, function(d) {
+			return d3.max(d, function(e) {
+				return e[1];
+			});
+		})
+	]);
+
+    var dataCategories = vis.colorScale.domain();
+
+// Draw the layers
+    var categories = vis.svg.selectAll(".area")
+        .data(vis.displayData);
+
+    categories.enter().append("path")
+        .attr("class", "area")
+        .merge(categories)
+        .style("fill", function(d,i) {
+            return colorScale(dataCategories[i]);
+        })
+        .attr("d", function(d) {
+            return vis.area(d);
+        })
+        .on("mouseover", function(d) {
+            vis.tooltip.text(d.key)
+        })
+
+
+    // TO-DO: Update tooltip text
+
+	categories.exit().remove();
+
+
+	// Call axis functions with the new domain 
+	vis.svg.select(".x-axis").call(vis.xAxis);
+    vis.svg.select(".y-axis").call(vis.yAxis);
 }
