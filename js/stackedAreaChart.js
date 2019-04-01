@@ -15,33 +15,33 @@ StackedAreaChart.prototype.initVis = function(){
     vis.height = 400 - vis.margin.top - vis.margin.bottom;
 
 
-  // SVG drawing area
+    // SVG drawing area
 	vis.svg = d3.select("#" + vis.parentElement).append("svg")
 	    .attr("width", vis.width + vis.margin.left + vis.margin.right)
 	    .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
-       .append("g")
+        .append("g")
 	    .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
-	// TO-DO: Overlay with path clipping
     vis.svg.append("defs").append("clipPath")
         .attr("id", "clip")
         .append("rect")
         .attr("width", vis.width)
         .attr("height", vis.height);
-
+    
     // Scales and axes
     vis.x = d3.scaleTime()
         .range([0, vis.width])
         .domain(d3.extent(vis.data, function(d) { return d.Year; }));
 
-    vis.y = d3.scaleLinear()
-        .range([vis.height, 0]);
+    vis.y = d3.scaleSqrt()
+        .range([vis.height, 0])
 
     vis.xAxis = d3.axisBottom()
         .scale(vis.x);
 
     vis.yAxis = d3.axisLeft()
-        .scale(vis.y);
+        .scale(vis.y)
+        .tickFormat(function(d) {return d3.format("$.2s")(d).replace(/G/, "B")});
 
     vis.svg.append("g")
         .attr("class", "x-axis axis")
@@ -50,27 +50,19 @@ StackedAreaChart.prototype.initVis = function(){
     vis.svg.append("g")
         .attr("class", "y-axis axis");
 
-
-    // TO-DO: Initialize stack layout
     var dataCategories = vis.colorScale.domain();
-    var stack = d3.stack().keys(dataCategories);
-    vis.stackedData = stack(vis.data)
+    vis.stack = d3.stack().keys(dataCategories);
+    vis.stackedData = vis.stack(vis.data)
 
-    // TO-DO: Rearrange data
-
-    // TO-DO: Stacked area layout
     vis.area = d3.area()
-    .x(function(d) { return vis.x(d.data.Year); })
-    .y0(function(d) { return vis.y(d[0]); })
-    .y1(function(d) { return vis.y(d[1]); });
+        .x(function(d) { return vis.x(d.data.Year); })
+        .y0(function(d) { return vis.y(d[0]); })
+        .y1(function(d) { return vis.y(d[1]); });
 
-
-	// TO-DO: Tooltip placeholder
     vis.tooltip = vis.svg.append("text")
         .attr("x", 0)
         .attr("y", 0)
 
-	// TO-DO: (Filter, aggregate, modify data)
     vis.wrangleData();
 }
 
@@ -83,8 +75,10 @@ StackedAreaChart.prototype.initVis = function(){
 StackedAreaChart.prototype.wrangleData = function(){
 	var vis = this;
 
-	// In the first step no data wrangling/filtering needed
-	vis.displayData = vis.stackedData;
+	vis.displayData = vis.stack(vis.data.filter(function(d) {
+        domain = vis.x.domain();
+        return d.Year.getFullYear() >= domain[0].getFullYear() && d.Year.getFullYear() <= domain[1].getFullYear() + 1
+    }));
 
 	// Update the visualization
     vis.updateVis();
@@ -100,8 +94,6 @@ StackedAreaChart.prototype.wrangleData = function(){
 StackedAreaChart.prototype.updateVis = function(){
 	var vis = this;
 
-	// Update domain
-	// Get the maximum of the multi-dimensional array or in other words, get the highest peak of the uppermost layer
 	vis.y.domain([0, d3.max(vis.displayData, function(d) {
 			return d3.max(d, function(e) {
 				return e[1];
@@ -111,12 +103,13 @@ StackedAreaChart.prototype.updateVis = function(){
 
     var dataCategories = vis.colorScale.domain();
 
-// Draw the layers
+    // Draw the layers
     var categories = vis.svg.selectAll(".area")
         .data(vis.displayData);
 
     categories.enter().append("path")
         .attr("class", "area")
+        .attr("clip-path", "url(#clip)")
         .merge(categories)
         .style("fill", function(d,i) {
             return colorScale(dataCategories[i]);
@@ -126,13 +119,9 @@ StackedAreaChart.prototype.updateVis = function(){
         })
         .on("mouseover", function(d) {
             vis.tooltip.text(d.key)
-        })
-
-
-    // TO-DO: Update tooltip text
+        });
 
 	categories.exit().remove();
-
 
 	// Call axis functions with the new domain 
 	vis.svg.select(".x-axis").call(vis.xAxis);

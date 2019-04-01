@@ -1,6 +1,10 @@
 var colorScale = d3.scaleOrdinal(d3.schemeCategory20);
 
-var stackedAreaChart, timeline;
+var parseYear = d3.timeParse("%Y");
+
+var parseDate = d3.timeParse("%x")
+
+var stackedAreaChart, timeline, barChart;
 
 d3.queue()
     .defer(d3.json, "data/movies.json")
@@ -10,6 +14,16 @@ d3.queue()
 
 function createVis(error, movies, actors, stacks) {
     colorScale.domain(d3.keys(stacks.layers[0]).filter(function(d){ return d != "Year"; }))
+    movies.forEach(function(movie) {
+        movie.release_date = parseDate(movie.release_date)
+    })
+    stacks.years.forEach(function(year) {
+        year.Year = parseYear(year.Year)
+    })
+    stacks.layers.forEach(function(layer) {
+        layer.Year = parseYear(layer.Year)
+    })
+    //stacks.years.for
     // data = {"years":[], "layers":[]}
     // genres = new Set()
     // movies.forEach(function(movie) {
@@ -19,7 +33,8 @@ function createVis(error, movies, actors, stacks) {
     // })
     // genres = Array.from(genres).sort()
     // movies.forEach(function(movie) {
-    //     year = new Date(movie.release_date).getFullYear();
+    //     movie.release_date = parseDate(movie.release_date)
+    //     year = movie.release_date.getFullYear();
     //     check = data.years.filter(function(d){ return d.Year === year })
     //     if (check.length > 0) {
     //         y = check[0]
@@ -60,13 +75,22 @@ function createVis(error, movies, actors, stacks) {
     // linkElement.click();
     areachart = new StackedAreaChart("stacked-area-chart", stacks.layers, colorScale);
     timeline = new Timeline("timeline", stacks.years, colorScale)
-    
+    barChart = new BarChart("bar-chart", movies, colorScale)
 }
 
 function brushed() {
     // TO-DO: React to 'brushed' event
-    areachart.x.domain(
-        d3.event.selection === null ? timeline.x.domain() : [timeline.x.invert(d3.event.selection[0]), timeline.x.invert(d3.event.selection[1])]
-    );
+    if (d3.event.selection === null) {
+        areachart.x.domain(timeline.x.domain());
+        barChart.filteredData = barChart.data;
+    } else {
+        limit = timeline.x.invert(d3.event.selection[1]).getFullYear() == 2018 ? new Date(2017, 1, 1) : timeline.x.invert(d3.event.selection[1]);
+        areachart.x.domain([timeline.x.invert(d3.event.selection[0]), limit]);
+        barChart.filteredData = barChart.data.filter(function(d){
+            return d.release_date >= timeline.x.invert(d3.event.selection[0]) && d.release_date <= timeline.x.invert(d3.event.selection[1]);
+        });
+    }
+
     areachart.wrangleData();
+    barChart.wrangleData();
 }

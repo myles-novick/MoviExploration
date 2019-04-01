@@ -21,7 +21,7 @@ Timeline = function(_parentElement, _data, _colorScale){
  */
 
 Timeline.prototype.initVis = function(){
-	var vis = this; // read about the this
+	var vis = this;
 
 	vis.margin = {top: 0, right: 0, bottom: 30, left: 60};
 
@@ -32,18 +32,18 @@ Timeline.prototype.initVis = function(){
 	vis.svg = d3.select("#" + vis.parentElement).append("svg")
 	    .attr("width", vis.width + vis.margin.left + vis.margin.right)
 	    .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
-	  .append("g")
+	    .append("g")
 	    .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
 
-// Scales and axes
+    // Scales and axes
     vis.x = d3.scaleTime()
         .range([0, vis.width])
-        .domain(d3.extent(vis.displayData, function(d) { return d.Year; }));
+        .domain(addYear());
 
-    vis.y = d3.scaleLinear()
+    vis.y = d3.scaleSqrt()
         .range([vis.height, 0])
-        .domain([0, d3.max(vis.displayData, function(d) { return d.Expenditures; })]);
+        .domain([0, d3.max(vis.displayData, function(d) { return d.Revenue; })]);
 
     vis.xAxis = d3.axisBottom()
         .scale(vis.x);
@@ -61,22 +61,26 @@ Timeline.prototype.initVis = function(){
         .attr("fill", "#ccc")
         .attr("d", vis.area);
 
+    vis.brush = d3.brushX()
+        .extent([[0, 0], [vis.width, vis.height]])
+        .on("brush", brushed);
 
-  // TO-DO: Initialize brush component
-  vis.brush = d3.brushX()
-  .extent([[0, 0], [vis.width, vis.height]])
-  .on("brush", brushed);
-  // TO-DO: Append brush component here
-  vis.svg.append("g")
-    .attr("class", "x brush")
-    .call(vis.brush)
-    .selectAll("rect")
-    .attr("y", -6)
-    .attr("height", vis.height + 7);
+    vis.svg.append("g")
+        .attr("class", "x brush")
+        .call(vis.brush)
+        .selectAll("rect")
+        .attr("y", -6)
+        .attr("height", vis.height + 7);
 
-  vis.svg.append("g")
-      .attr("class", "x-axis axis")
-      .attr("transform", "translate(0," + vis.height + ")")
-      .call(vis.xAxis);
+    vis.svg.append("g")
+        .attr("class", "x-axis axis")
+        .attr("transform", "translate(0," + vis.height + ")")
+        .call(vis.xAxis);
+    
+    function addYear() {
+        range = d3.extent(vis.data, function(d) { return d.Year; });
+        last = range[1]
+        return [range[0], new Date(last.getFullYear() + 1, last.getMonth(), last.getDate())]
+    }
 }
 
