@@ -6,6 +6,9 @@ var parseDate = d3.timeParse("%x")
 
 var stackedAreaChart, timeline, barChart;
 
+var genreRevenue = [];
+var workableArray = [];
+
 d3.queue()
     .defer(d3.json, "data/movies.json")
     .defer(d3.json, "data/actors.json")
@@ -16,7 +19,14 @@ function createVis(error, movies, actors, stacks) {
     colorScale.domain(d3.keys(stacks.layers[0]).filter(function(d){ return d != "Year"; }))
     movies.forEach(function(movie) {
         movie.release_date = parseDate(movie.release_date)
+        movie.title = movie.title;
+        movie.revenue = +movie.revenue;
+        movie.genres = movie.genres;
+        genreRevenue.push(([movie.title,movie.genres,movie.revenue]));
     })
+    for (let i=0;i<25;i++){
+        workableArray.push([genreRevenue[i]])
+    }
     stacks.years.forEach(function(year) {
         year.Year = parseYear(year.Year)
     })
@@ -76,6 +86,7 @@ function createVis(error, movies, actors, stacks) {
     areachart = new StackedAreaChart("stacked-area-chart", stacks.layers, colorScale);
     timeline = new Timeline("timeline", stacks.years, colorScale)
     barChart = new BarChart("bar-chart", movies, colorScale)
+    piChart = new PiChart("pi-chart", workableArray, colorScale)
 }
 
 function brushed() {
