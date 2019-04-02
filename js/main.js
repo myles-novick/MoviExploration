@@ -4,7 +4,7 @@ var parseYear = d3.timeParse("%Y");
 
 var parseDate = d3.timeParse("%x")
 
-var stackedAreaChart, timeline, barChart;
+var stackedAreaChart, timeline, barChart, pieChart;
 
 var genreRevenue = [];
 var workableArray = [];
@@ -17,6 +17,7 @@ d3.queue()
 
 function createVis(error, movies, actors, stacks) {
     colorScale.domain(d3.keys(stacks.layers[0]).filter(function(d){ return d != "Year"; }))
+    //console.log(movies)
     movies.forEach(function(movie) {
         movie.release_date = parseDate(movie.release_date)
         movie.title = movie.title;
@@ -86,7 +87,7 @@ function createVis(error, movies, actors, stacks) {
     areachart = new StackedAreaChart("stacked-area-chart", stacks.layers, colorScale);
     timeline = new Timeline("timeline", stacks.years, colorScale)
     barChart = new BarChart("bar-chart", movies, colorScale)
-    piChart = new PiChart("pi-chart", workableArray, colorScale)
+    pieChart = new PieChart("pie-chart", movies, colorScale)
 }
 
 function brushed() {
@@ -94,14 +95,19 @@ function brushed() {
     if (d3.event.selection === null) {
         areachart.x.domain(timeline.x.domain());
         barChart.filteredData = barChart.data;
+        pieChart.filteredData = pieChart.data;
     } else {
         limit = timeline.x.invert(d3.event.selection[1]).getFullYear() == 2018 ? new Date(2017, 1, 1) : timeline.x.invert(d3.event.selection[1]);
         areachart.x.domain([timeline.x.invert(d3.event.selection[0]), limit]);
         barChart.filteredData = barChart.data.filter(function(d){
             return d.release_date >= timeline.x.invert(d3.event.selection[0]) && d.release_date <= timeline.x.invert(d3.event.selection[1]);
         });
+        pieChart.filteredData = pieChart.data.filter(function(d){
+            return d.release_date >= timeline.x.invert(d3.event.selection[0]) && d.release_date <= timeline.x.invert(d3.event.selection[1]);
+        });
     }
 
     areachart.wrangleData();
     barChart.wrangleData();
+    pieChart.wrangleData();
 }
