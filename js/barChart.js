@@ -114,15 +114,19 @@ BarChart.prototype.updateVis = function(){
 
     ticks = vis.svg.select(".x-axis")
         .selectAll(".tick")
-        .selectAll("image").data(function(d, i) {return [i]})
+        .selectAll("image").data(function(d) {return [d]})
+    ticks.exit().remove()
     ticks.enter()
         .append('image')
-        .merge(ticks)
-        .attr('xlink:href', function(d) {return vis.displayData[d % 5].poster})
         .attr('x',-46)
         .attr('y', 0)
         .attr('width',92)
-        .attr('height',138);
+        .attr('height',138)
+        .merge(ticks)
+        .attr('xlink:href', function(d) {
+            contains = vis.displayData.filter(function(movie) {return movie.title === d;})
+            return contains.length > 0 ? contains[0].poster : null;
+        })
 
 	vis.svg.select(".y-axis")
 		.transition().duration(500)

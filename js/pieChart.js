@@ -31,6 +31,21 @@ PieChart.prototype.initVis = function(){
     vis.g = vis.svg.append("g")
         .attr("transform", "translate(" + (vis.radius) + ", 210)");
 
+    vis.label = vis.g.append('text')
+        .attr('class', 'toolCircle')
+        .attr('dy', -15) // hard-coded. can adjust this to adjust text vertical alignment in tooltip
+        //.html(toolTipHTML(data)) // add text to the circle.
+        .style('font-size', '.9em')
+        .style('text-anchor', 'middle'); // centres text in tooltip
+
+    vis.inner = vis.g.append('circle')
+        .attr('class', 'toolCircle')
+        .attr('r', vis.radius * 0.7) // radius of tooltip circle
+        //.style('fill', colour(data.data[category])) // colour based on category mouse is over
+        .style('fill-opacity', 0.35)
+        .style("visibility", "hidden")
+
+
     //var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     vis.pie = d3.pie()
@@ -38,12 +53,14 @@ PieChart.prototype.initVis = function(){
         .value(function(d,i) { return d.revenue; });
 
     vis.path = d3.arc()
-        .outerRadius(vis.radius)
-        .innerRadius(0);
+        .outerRadius(vis.radius - 40)//vis.radius - 40)
+        .innerRadius(vis.radius)
+        //.cornerRadius(2)
+        //.padAngle(0.010)
 
-    vis.label = d3.arc()
-        .outerRadius(vis.radius-40)
-        .innerRadius(vis.radius-40);
+    // vis.label = d3.arc()
+    //     .outerRadius(vis.radius * .9)
+    //     .innerRadius(vis.radius * .9);
 
     // var arc = vis.g.selectAll(".arc")
     //     .data(pie(vis.data))
@@ -104,17 +121,26 @@ PieChart.prototype.updateVis = function() {
     var entering = arc.enter().append("g")
         .attr("class", "arc")
         .on("mouseover", function(d) {
+            //console.log(d)
             var node = d3.select(this);
             node.moveToFront();
             node.transition()
                 .attr("stroke","black")
-                .select("text").style("visibility", "visible")
+                //.select("text").style("visibility", "visible")
+            vis.label
+                .style("visibility", "visible")
+                .html('<tspan x="0">' + d.data.genre + '</tspan> <tspan x="0" dy="1.2em">' + d3.format("$,")(d.data.revenue) + '</tspan>')
+            vis.inner
+                .attr("fill", vis.colorScale(d.data.genre))
+                .style("visibility", "visible");
         })
         .on("mouseout", function(d){
             d3.select(this)
                 .transition()
                 .attr("stroke","none")
-                .select("text").style("visibility","hidden");
+                //.select("text").style("visibility","hidden");
+            vis.label.style("visibility","hidden");
+            vis.inner.style("visibility","hidden");
         });
     entering.append("path")
     entering.append("text")
@@ -128,8 +154,8 @@ PieChart.prototype.updateVis = function() {
         .attr("fill", function(d,i) { return vis.colorScale(d.data.genre); }) //colored based off revenue looks best
 
     slice.select("text")
-        .attr("transform", function(d) { return "translate(" + vis.label.centroid(d) + ")"; })
-        .text(function(d,i) { return d.data.genre + " - " + d3.format("$,")(d.data.revenue) });
+        //.attr("transform", function(d) { return "translate(" + vis.label.centroid(d) + ")"; })
+        .text(function(d,i) { return d.data.genre + "\n" + d3.format("$,")(d.data.revenue) });
 }
 
 d3.selection.prototype.moveToFront = function() {
@@ -137,3 +163,7 @@ d3.selection.prototype.moveToFront = function() {
         this.parentNode.appendChild(this);
     });
 };
+
+function createLabel(genre) {
+    return 
+}
