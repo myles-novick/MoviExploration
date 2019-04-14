@@ -20,7 +20,7 @@ StackedAreaChart.prototype.initVis = function(){
 	    .attr("width", vis.width + vis.margin.left + vis.margin.right)
 	    .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
         .append("g")
-	    .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
+	    .attr("transform", "translate(" + (vis.margin.left+20) + "," + vis.margin.top + ")");
 
     vis.svg.append("defs").append("clipPath")
         .attr("id", "clip")
