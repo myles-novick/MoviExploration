@@ -4,6 +4,7 @@ BarChart = function(_parentElement, _data, _colorScale){
     this.colorScale = _colorScale;
     this.filteredData = _data;
     this.displayData = [];
+    this.filterGenre = null;
     this.initVis();
 }
 
@@ -67,8 +68,14 @@ BarChart.prototype.initVis = function(){
 
 BarChart.prototype.wrangleData = function(){
 	var vis = this;
-
-	vis.displayData = vis.filteredData.sort(function(a,b){return b[vis.option] - a[vis.option]}).slice(0,5);
+    if (vis.filterGenre != null) {
+        vis.displayData = vis.filteredData.filter(function(v) {
+           return v.genres.includes(vis.filterGenre);
+        })
+    } else {
+        vis.displayData = vis.filteredData;
+    }
+	vis.displayData = vis.displayData.sort(function(a,b){return b[vis.option] - a[vis.option]}).slice(0,5);
     vis.x.domain(vis.displayData.map(function(d) { return d.title; }));
     vis.y.domain([0, d3.max(vis.displayData, function(d){return d[vis.option]})]);
     
@@ -96,7 +103,8 @@ BarChart.prototype.updateVis = function(){
         .attr("class", "barchart-label")
         .text("By Movie");
 
-	var groups = vis.svg.selectAll(".bar").data(vis.displayData);
+    var groups = vis.svg.selectAll(".bar").data(vis.displayData);
+    groups.exit().remove();
 	groups.enter().append("g")
 		.merge(groups)
 		.attr("class", "bar")
@@ -115,7 +123,7 @@ BarChart.prototype.updateVis = function(){
         .attr("height", function() {return vis.height - vis.y(d3.select(this.parentNode).data()[0][vis.option]);})
         .attr("x", function(d,i) {return parseInt(d3.select(this.parentNode).attr("x")) + i * d3.select(this).attr("width")})
         .attr("y", function() {return vis.y(d3.select(this.parentNode).data()[0][vis.option])})
-        .on("mouseover", function(d,i) {
+        .on("mouseover", function(d) {
             vis.tooltip.style("fill",vis.colorScale(d))
             vis.tooltip.text(d);
         })

@@ -51,7 +51,7 @@ Timeline.prototype.initVis = function(){
 
     // SVG area path generator
     vis.area = d3.area()
-        .x(function(d) { return vis.x(d.Year); })
+        .x(function(d) { return vis.x(parseYear(d.Year)); })
         .y0(vis.height)
         .y1(function(d) { return vis.y(d.Revenue); });
 
@@ -79,8 +79,7 @@ Timeline.prototype.initVis = function(){
     
     function addYear() {
         range = d3.extent(vis.data, function(d) { return d.Year; });
-        last = range[1]
-        return [range[0], new Date(last.getFullYear() + 1, last.getMonth(), last.getDate())]
+        return [parseYear(range[0]), parseYear(range[1]+1)]//new Date(last.getFullYear() + 1, last.getMonth(), last.getDate())]
     }
 }
 

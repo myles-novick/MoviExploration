@@ -7,7 +7,7 @@ var parseDate = d3.timeParse("%x")
 var stackedAreaChart, timeline, barChart, pieChart;
 
 var genreRevenue = [];
-var workableArray = [];
+//var workableArray = [];
 
 d3.queue()
     .defer(d3.json, "data/movies.json")
@@ -25,16 +25,14 @@ function createVis(error, movies, actors, stacks) {
         movie.genres = movie.genres;
         genreRevenue.push(([movie.title,movie.genres,movie.revenue]));
     })
-    for (let i=0;i<25;i++){
-        workableArray.push([genreRevenue[i]])
-    }
-    stacks.years.forEach(function(year) {
-        year.Year = parseYear(year.Year)
-    })
-    stacks.layers.forEach(function(layer) {
-        layer.Year = parseYear(layer.Year)
-    })
-    //stacks.years.for
+
+    // stacks.years.forEach(function(year) {
+    //     year.Year = parseYear(year.Year)
+    // })
+    // stacks.layers.forEach(function(layer) {
+    //     layer.Year = parseYear(layer.Year)
+    // })
+    // stacks.years.for
     // data = {"years":[], "layers":[]}
     // genres = new Set()
     // movies.forEach(function(movie) {
@@ -44,7 +42,8 @@ function createVis(error, movies, actors, stacks) {
     // })
     // genres = Array.from(genres).sort()
     // movies.forEach(function(movie) {
-    //     movie.release_date = parseDate(movie.release_date)
+    //     //movie.release_date = parseDate(movie.release_date)
+    //     //console.log(movie.release_date)
     //     year = movie.release_date.getFullYear();
     //     check = data.years.filter(function(d){ return d.Year === year })
     //     if (check.length > 0) {
@@ -84,6 +83,7 @@ function createVis(error, movies, actors, stacks) {
     // linkElement.setAttribute('href', dataUri);
     // linkElement.setAttribute('download', exportFileDefaultName);
     // linkElement.click();
+    
     areachart = new StackedAreaChart("stacked-area-chart", stacks.layers, colorScale);
     timeline = new Timeline("timeline", stacks.years, colorScale)
     barChart = new BarChart("bar-chart", movies, colorScale)
@@ -112,6 +112,7 @@ function brushed() {
     pieChart.wrangleData();
 }
 
-function filtered(genre) {
-
+function filtered(selection) {
+    barChart.filterGenre = selection == null ? null : selection.genre;
+    barChart.wrangleData();
 }

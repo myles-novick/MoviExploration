@@ -31,7 +31,7 @@ StackedAreaChart.prototype.initVis = function(){
     // Scales and axes
     vis.x = d3.scaleTime()
         .range([0, vis.width])
-        .domain(d3.extent(vis.data, function(d) { return d.Year; }));
+        .domain(d3.extent(vis.data, function(d) { return parseYear(d.Year); }));
 
     vis.y = d3.scaleSqrt()
         .range([vis.height, 0])
@@ -58,7 +58,7 @@ StackedAreaChart.prototype.initVis = function(){
     vis.stackedData = vis.stack(vis.data)
 
     vis.area = d3.area()
-        .x(function(d) { return vis.x(d.data.Year); })
+        .x(function(d) { return vis.x(parseYear(d.data.Year)); })
         .y0(function(d) { return vis.y(d[0]); })
         .y1(function(d) { return vis.y(d[1]); });
 
@@ -81,7 +81,7 @@ StackedAreaChart.prototype.wrangleData = function(){
 
 	vis.displayData = vis.stack(vis.data.filter(function(d) {
         domain = vis.x.domain();
-        return d.Year.getFullYear() >= domain[0].getFullYear() && d.Year.getFullYear() <= domain[1].getFullYear() + 1
+        return d.Year >= domain[0].getFullYear() && d.Year <= domain[1].getFullYear() + 1
     }));
 
 	// Update the visualization
