@@ -128,6 +128,9 @@ StackedAreaChart.prototype.updateVis = function(){
         .on("mouseover", function(d,i) {
             vis.tooltip.style("fill",colorScale(dataCategories[i]))
             vis.tooltip.text(d.key)
+        })
+        .on("mouseout", function(d,i) {
+            vis.tooltip.text("")
         });
 
 	categories.exit().remove();
