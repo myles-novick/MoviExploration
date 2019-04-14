@@ -43,6 +43,9 @@ StackedAreaChart.prototype.initVis = function(){
         .scale(vis.y)
         .tickFormat(function(d) {return d3.format("$.2s")(d).replace(/G/, "B")});
 
+    vis.text = vis.svg.append("text")
+        .attr("transform","translate(" + vis.width/2 + ",0)");
+
     vis.svg.append("g")
         .attr("class", "x-axis axis")
         .attr("transform", "translate(0," + vis.height + ")");
@@ -60,7 +63,8 @@ StackedAreaChart.prototype.initVis = function(){
         .y1(function(d) { return vis.y(d[1]); });
 
     vis.tooltip = vis.svg.append("text")
-        .attr("x", 0)
+        .attr("id","stacked-area-chart-text")
+        .attr("x", 10)
         .attr("y", 0)
 
     vis.wrangleData();
@@ -94,6 +98,10 @@ StackedAreaChart.prototype.wrangleData = function(){
 StackedAreaChart.prototype.updateVis = function(){
 	var vis = this;
 
+    var chartDescription = vis.text
+        .attr("class", "stackedareachart-label")
+        .text("By Year");
+
 	vis.y.domain([0, d3.max(vis.displayData, function(d) {
 			return d3.max(d, function(e) {
 				return e[1];
@@ -117,7 +125,8 @@ StackedAreaChart.prototype.updateVis = function(){
         .attr("d", function(d) {
             return vis.area(d);
         })
-        .on("mouseover", function(d) {
+        .on("mouseover", function(d,i) {
+            vis.tooltip.style("fill",colorScale(dataCategories[i]))
             vis.tooltip.text(d.key)
         });
 
