@@ -16,10 +16,10 @@ BarChart.prototype.initVis = function(){
     vis.height = 400 - vis.margin.top - vis.margin.bottom;
 
 	vis.svg = d3.select("#" + vis.parentElement).append("svg")
-	    .attr("width", vis.width + vis.margin.left + vis.margin.right)
+	    .attr("width", vis.width + vis.margin.left + vis.margin.right+200)
 	    .attr("height", vis.height + vis.margin.top + vis.margin.bottom + 100)
         .append("g")
-	    .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
+	    .attr("transform", "translate(" + (vis.margin.left+120) + "," + vis.margin.top + ")");
 
     vis.x = d3.scaleBand()
         .rangeRound([0, vis.width])
@@ -40,7 +40,8 @@ BarChart.prototype.initVis = function(){
         .call(vis.yAxis);
 
     vis.dropdown = d3.select("#" + vis.parentElement)
-        .insert("select", "svg")
+        .append("select")
+        .attr("x", vis.margin.left+120)
         .attr("id", "dropdown")
         .on("change", function() {
             vis.option = d3.select(this).property("value");
@@ -126,11 +127,10 @@ BarChart.prototype.updateVis = function(){
 		.transition().duration(500)
         .call(vis.xAxis)
         .selectAll(".tick")
-        .select("text").attr("y",140);
-
-        /*.attr("transform", "rotate(-90)")
-        .attr("y", -65)
-        .attr("x", -75);*/
+        .select("text")
+        .attr("id", "tick-text")
+        .attr("y", 140)
+        .attr("visibility", "hidden");
 
     ticks = vis.svg.select(".x-axis")
         .selectAll(".tick")
@@ -138,6 +138,7 @@ BarChart.prototype.updateVis = function(){
     ticks.exit().remove()
     ticks.enter()
         .append('image')
+        .attr("id","images")
         .attr('x',-46)
         .attr('y', 0)
         .attr('width',92)
@@ -146,6 +147,14 @@ BarChart.prototype.updateVis = function(){
         .attr('xlink:href', function(d) {
             contains = vis.displayData.filter(function(movie) {return movie.title === d;})
             return contains.length > 0 ? contains[0].poster : null;
+        })
+        .on("mouseover", function(d){
+            var nodeSelection = d3.select(this.parentNode);
+            nodeSelection.select("text").attr("visibility", "visible");
+        })
+        .on("mouseout", function(d){
+            var nodeSelection = d3.select(this.parentNode);
+            nodeSelection.select("text").attr("visibility", "hidden");
         })
 	vis.svg.select(".y-axis")
 		.transition().duration(500)
