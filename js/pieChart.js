@@ -27,6 +27,8 @@ PieChart.prototype.initVis = function(){
     vis.svg = d3.select("#" + vis.parentElement).append("svg")
         .attr("width", vis.width)
         .attr("height", vis.height);
+    vis.div = vis.svg.append('text')
+        .attr("transform", "translate(120, 25)");
 
     vis.g = vis.svg.append("g")
         .attr("transform", "translate(" + (vis.radius) + ", 210)");
@@ -114,6 +116,10 @@ PieChart.prototype.wrangleData = function() {
 
 PieChart.prototype.updateVis = function() {
     var vis = this;
+
+    var chartDescription = vis.div
+        .attr("class", "piechart-label")
+        .text("By Genre");
 
     var arc = vis.g.selectAll(".arc")
         .data(vis.pie(vis.displayData))

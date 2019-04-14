@@ -30,6 +30,7 @@ BarChart.prototype.initVis = function(){
     
     vis.xAxis = d3.axisBottom(vis.x);
     vis.yAxis = d3.axisLeft(vis.y);
+    vis.div = vis.svg.append('text').attr("transform", "translate(" +vis.width/2 +",0)");
     vis.svg.append("g")
         .attr("class", "x-axis axis")
         .attr("transform", "translate(0, " + vis.height + ")")
@@ -40,6 +41,7 @@ BarChart.prototype.initVis = function(){
 
     vis.dropdown = d3.select("#" + vis.parentElement)
         .insert("select", "svg")
+        .attr("id", "dropdown")
         .on("change", function() {
             vis.option = d3.select(this).property("value");
         vis.wrangleData();
@@ -50,6 +52,10 @@ BarChart.prototype.initVis = function(){
         .attr("value", function (d) {return d.toLowerCase()})
         .text(function (d) {return d});
     vis.option = "revenue";
+    vis.tooltip = vis.svg.append("text")
+        .attr("id","bar-chart-text")
+        .attr("x", vis.width-150)
+        .attr("y", 0)
     vis.wrangleData();
 }
 
@@ -84,6 +90,12 @@ BarChart.prototype.wrangleData = function(){
 BarChart.prototype.updateVis = function(){
 	var vis = this;
 
+    var dataCategories = vis.colorScale.domain();
+
+    var chartDescription = vis.div
+        .attr("class", "barchart-label")
+        .text("By Movie");
+
 	var groups = vis.svg.selectAll(".bar").data(vis.displayData);
 	groups.enter().append("g")
 		.merge(groups)
@@ -103,6 +115,10 @@ BarChart.prototype.updateVis = function(){
         .attr("height", function() {return vis.height - vis.y(d3.select(this.parentNode).data()[0][vis.option]);})
         .attr("x", function(d,i) {return parseInt(d3.select(this.parentNode).attr("x")) + i * d3.select(this).attr("width")})
         .attr("y", function() {return vis.y(d3.select(this.parentNode).data()[0][vis.option])})
+        .on("mouseover", function(d,i) {
+            vis.tooltip.style("fill",vis.colorScale(d))
+            vis.tooltip.text(d);
+        })
         .transition().duration(500)
         .attr("fill", function(d) {return vis.colorScale(d);});
     
@@ -110,7 +126,11 @@ BarChart.prototype.updateVis = function(){
 		.transition().duration(500)
         .call(vis.xAxis)
         .selectAll(".tick")
-        .select("text").attr("y", 140);
+        .select("text").attr("y",140);
+
+        /*.attr("transform", "rotate(-90)")
+        .attr("y", -65)
+        .attr("x", -75);*/
 
     ticks = vis.svg.select(".x-axis")
         .selectAll(".tick")
@@ -127,7 +147,6 @@ BarChart.prototype.updateVis = function(){
             contains = vis.displayData.filter(function(movie) {return movie.title === d;})
             return contains.length > 0 ? contains[0].poster : null;
         })
-
 	vis.svg.select(".y-axis")
 		.transition().duration(500)
         .call(vis.yAxis);
