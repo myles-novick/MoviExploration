@@ -128,6 +128,9 @@ BarChart.prototype.updateVis = function(){
             vis.tooltip.style("fill",vis.colorScale(d))
             vis.tooltip.text(d);
         })
+        .on("mouseout", function(d) {
+            vis.tooltip.text("")
+        })
         .transition().duration(500)
         .attr("fill", function(d) {return vis.colorScale(d);});
     
