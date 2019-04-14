@@ -156,13 +156,17 @@ BarChart.prototype.updateVis = function(){
             contains = vis.displayData.filter(function(movie) {return movie.title === d;})
             return contains.length > 0 ? contains[0].poster : null;
         })
-        .on("mouseover", function(d){
+        .on("mouseover", function(){
             var nodeSelection = d3.select(this.parentNode);
             nodeSelection.select("text").attr("visibility", "visible");
         })
-        .on("mouseout", function(d){
+        .on("mouseout", function(){
             var nodeSelection = d3.select(this.parentNode);
             nodeSelection.select("text").attr("visibility", "hidden");
+        })
+        .on("click", function(d) {
+            var actors = vis.displayData.filter(function(movie) {return movie.title === d;})[0].cast;
+            createForce(actors);
         })
 	vis.svg.select(".y-axis")
 		.transition().duration(500)

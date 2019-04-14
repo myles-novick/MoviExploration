@@ -1,8 +1,8 @@
-PieChart = function(_parentElement, _data, colorScale){
+PieChart = function(_parentElement, _data, _colorScale){
     this.parentElement = _parentElement;
     this.data = _data;
     this.filteredData = _data;
-    this.colorScale = colorScale;
+    this.colorScale = _colorScale;
     this.selected = null;
     // No data wrangling, no update sequence
     this.displayData = [];

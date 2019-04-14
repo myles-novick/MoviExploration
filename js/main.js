@@ -4,7 +4,7 @@ var parseYear = d3.timeParse("%Y");
 
 var parseDate = d3.timeParse("%x")
 
-var stackedAreaChart, timeline, barChart, pieChart;
+var stackedAreaChart, timeline, barChart, pieChart, forceGraph;
 
 var genreRevenue = [];
 //var workableArray = [];
@@ -83,11 +83,12 @@ function createVis(error, movies, actors, stacks) {
     // linkElement.setAttribute('href', dataUri);
     // linkElement.setAttribute('download', exportFileDefaultName);
     // linkElement.click();
-    
+
     areachart = new StackedAreaChart("stacked-area-chart", stacks.layers, colorScale);
-    timeline = new Timeline("timeline", stacks.years, colorScale)
-    barChart = new BarChart("bar-chart", movies, colorScale)
-    pieChart = new PieChart("pie-chart", movies, colorScale)
+    timeline = new Timeline("timeline", stacks.years, colorScale);
+    barChart = new BarChart("bar-chart", movies, colorScale);
+    pieChart = new PieChart("pie-chart", movies, colorScale);
+    forceGraph = new ForceGraph("force-graph", actors, colorScale);
 }
 
 function brushed() {
@@ -115,4 +116,9 @@ function brushed() {
 function filtered(selection) {
     barChart.filterGenre = selection == null ? null : selection.genre;
     barChart.wrangleData();
+}
+
+function createForce(actors) {
+    forceGraph.filteredData = actors;
+    forceGraph.wrangleData();
 }
