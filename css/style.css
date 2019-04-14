@@ -14,10 +14,10 @@
 body{
 	background-color: #EAEDED;
 }
-<<<<<<< HEAD
 .selected {
 	stroke: black;
-=======
+}
+
 #dropdown{
 	width: 50%;
 	color: black;
@@ -35,5 +35,4 @@ body{
 #bar-chart{
 	width:1200px;
 	height: 600px;
->>>>>>> cffcaf40976e438e316273ac8354a42cde2b0f4a
 }
