@@ -111,3 +111,7 @@ function brushed() {
     barChart.wrangleData();
     pieChart.wrangleData();
 }
+
+function filtered(genre) {
+
+}

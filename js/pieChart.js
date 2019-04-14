@@ -134,13 +134,16 @@ PieChart.prototype.updateVis = function() {
                 .attr("fill", vis.colorScale(d.data.genre))
                 .style("visibility", "visible");
         })
-        .on("mouseout", function(d){
+        .on("mouseout", function(){
             d3.select(this)
                 .transition()
                 .attr("stroke","none")
                 //.select("text").style("visibility","hidden");
             vis.label.style("visibility","hidden");
             vis.inner.style("visibility","hidden");
+        })
+        .on("click", function(d) {
+            
         });
     entering.append("path")
     entering.append("text")
