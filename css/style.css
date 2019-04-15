@@ -6,7 +6,7 @@
 	font-size: 20px;
 	font-weight: bold;
 }
-.piechart-label,.barchart-label, .stackedareachart-label{
+.piechart-label,.barchart-label, .stackedareachart-label, .title{
 	fill: black;
 	font-size: 20px;
 	font-weight: bold;
@@ -35,4 +35,40 @@ body{
 #bar-chart{
 	width:1200px;
 	height: 600px;
+}
+
+.d3-tip {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 100px;
+    border-style: groove;
+    background: #FFFFFF;
+    color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    color: rgba(0, 0, 0, 0.8);
+    position: relative;
+    pointer-events: none;
+}
+
+/* Northward tooltips */
+.d3-tip.n:after {
+    content: "\25BC";
+    top: 100%;
+    left: 0;
+    text-align: center;
+}
+
+/* Eastward tooltips */
+.d3-tip.e:after {
+    content: "\26A0";
+    top: -800px;
+    left: -8px;
 }
