@@ -38,13 +38,14 @@ body{
 }
 
 .d3-tip {
-    padding-left: 10px;
-    padding-right: 10px;
-    min-width: 100px;
-    border-style: groove;
-    background: #FFFFFF;
-    color: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    min-width: 15px;
+    min-height: 30px;
+    border-style: ridge;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
     pointer-events: none;
 }
 
@@ -53,7 +54,6 @@ body{
     display: inline;
     font-size: 10px;
     width: 100%;
-    color: rgba(0, 0, 0, 0.8);
     position: relative;
     pointer-events: none;
 }

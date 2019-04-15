@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3c30f972-a8b6-4755-be6a-0cc1a79ea150" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/forceGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/forceGraph.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -24,8 +25,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/forceGraph.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="297">
-              <caret line="53" column="115" selection-start-line="53" selection-start-column="115" selection-end-line="53" selection-end-column="115" />
+            <state relative-caret-position="387">
+              <caret line="65" column="92" selection-start-line="65" selection-start-column="92" selection-end-line="65" selection-end-column="92" />
             </state>
           </provider>
         </entry>
@@ -51,8 +52,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/barChart.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2430">
+            <state relative-caret-position="498">
               <caret line="162" column="37" selection-start-line="162" selection-start-column="37" selection-end-line="162" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/css/style.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="463">
+              <caret line="55" column="16" selection-start-line="55" selection-start-column="16" selection-end-line="55" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -71,6 +81,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>&quot;id&quot;: 32</find>
+      <find>link</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -81,14 +92,15 @@
       <list>
         <option value="$PROJECT_DIR$/js/stackedAreaChart.js" />
         <option value="$PROJECT_DIR$/js/barChart.js" />
+        <option value="$PROJECT_DIR$/css/style.css" />
         <option value="$PROJECT_DIR$/js/forceGraph.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="82" />
-    <option name="y" value="24" />
-    <option name="width" value="1252" />
+    <option name="x" value="197" />
+    <option name="y" value="23" />
+    <option name="width" value="1243" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectView">
@@ -102,6 +114,11 @@
             <path>
               <item name="MoviExploration" type="b2602c69:ProjectViewProjectNode" />
               <item name="MoviExploration" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MoviExploration" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MoviExploration" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MoviExploration" type="b2602c69:ProjectViewProjectNode" />
@@ -148,18 +165,18 @@
       <option name="presentableId" value="Default" />
       <updated>1555275704191</updated>
       <workItem from="1555275706576" duration="2647000" />
-      <workItem from="1555352761690" duration="60000" />
+      <workItem from="1555352761690" duration="1023000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2707000" />
+    <option name="totallyTimeSpent" value="3670000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="82" y="24" width="1252" height="877" extended-state="0" />
+    <frame x="197" y="23" width="1243" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24939074" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2512275" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -199,13 +216,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/barChart.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2430">
-          <caret line="162" column="37" selection-start-line="162" selection-start-column="37" selection-end-line="162" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/actors.json">
       <provider selected="true" editor-type-id="LargeFileEditor">
         <state>
@@ -213,10 +223,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="463">
+          <caret line="55" column="16" selection-start-line="55" selection-start-column="16" selection-end-line="55" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/barChart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="498">
+          <caret line="162" column="37" selection-start-line="162" selection-start-column="37" selection-end-line="162" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/forceGraph.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="53" column="115" selection-start-line="53" selection-start-column="115" selection-end-line="53" selection-end-column="115" />
+        <state relative-caret-position="387">
+          <caret line="65" column="92" selection-start-line="65" selection-start-column="92" selection-end-line="65" selection-end-column="92" />
         </state>
       </provider>
     </entry>

@@ -63,7 +63,7 @@ ForceGraph.prototype.wrangleData = function() {
             var same = movies1.filter(function(v) {return movies2.includes(v)});
             var numSame = same.length - 1;
             if (numSame > 0) {
-                var link = {"source": actor1.name, "target": actor2.name, "value": numSame, "movies": same};
+                var link = {"source": actor1.name, "target": actor2.name, "value": numSame*3, "movies": same};
                 vis.displayData.edges.push(link);
             }
         }
