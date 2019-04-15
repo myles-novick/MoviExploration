@@ -169,7 +169,7 @@ BarChart.prototype.updateVis = function(){
         })
         .on("click", function(d) {
             var actors = vis.displayData.filter(function(movie) {return movie.title === d;})[0].cast;
-            createForce(actors);
+            createForce(actors, d);
         })
 	vis.svg.select(".y-axis")
 		.transition().duration(500)

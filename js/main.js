@@ -118,7 +118,8 @@ function filtered(selection) {
     barChart.wrangleData();
 }
 
-function createForce(actors) {
+function createForce(actors, movie) {
     forceGraph.filteredData = actors;
+    forceGraph.title = movie;
     forceGraph.wrangleData();
 }
