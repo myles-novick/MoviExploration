@@ -10,8 +10,8 @@ ForceGraph.prototype.init = function(){
 
     vis.margin = { top: 40, right: 0, bottom: 60, left: 60 };
 
-    vis.width = 600 - vis.margin.left - vis.margin.right,
-    vis.height = 400 - vis.margin.top - vis.margin.bottom;
+    vis.width = 1000 - vis.margin.left - vis.margin.right,
+    vis.height = 500 - vis.margin.top - vis.margin.bottom;
 
 
     // SVG drawing area
@@ -20,6 +20,8 @@ ForceGraph.prototype.init = function(){
         .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + (vis.margin.left+20) + "," + vis.margin.top + ")");
+
+    vis.defs = vis.svg.append("defs")
 };
   
 ForceGraph.prototype.tooltip_render = function (tooltip_data) {
@@ -39,7 +41,8 @@ ForceGraph.prototype.wrangleData = function() {
     //console.log(vis.filteredData)
     for (var i = 0; i < limit; i++) {
         var element = vis.filteredData[i];
-        var node = {"id": element.id, "name": element.name, "character": element.character, "image": character.image}
+        var node = {"id": element.id, "name": element.name, "character": element.character, "image": element.image}
+        //console.log(element)
         vis.displayData.nodes.push(node)
     }
     for (var i = 0; i < limit; i++) {
@@ -63,15 +66,32 @@ ForceGraph.prototype.wrangleData = function() {
   ForceGraph.prototype.updateVis = function() {
     var vis = this;
     //var keys = Object.keys(data)
+
+    var patterns = vis.defs.selectAll("pattern")
+        .data(vis.displayData.nodes.filter(function(d) {
+            return d.image != null;
+        }))
+    patterns.enter().append("pattern")
+        .attr("width", 1)
+        .attr("height", 1)
+        .append("image")
+        .attr("width", 44)
+        .attr("height", 68)
+        .attr("x", 0)
+        .attr("y", -5)
+    vis.defs.selectAll("pattern")
+        .attr("id", function(d){return "img_" + d.id})
+        .select("image")
+        .attr("xlink:href", function(d){return d.image});
     
     vis.simulation = d3.forceSimulation(vis.displayData.nodes)
       .force('link', d3.forceLink(vis.displayData.edges)
-        .distance(50)
+        .distance(190)
         .id(function(d) { return d.name; }))
       .force("center", d3.forceCenter().x(vis.width/2).y(vis.height/2))
       .force("x", d3.forceX())
       .force("y", d3.forceY())
-      .force('charge', d3.forceManyBody())
+      .force('charge', d3.forceManyBody().strength(-200))
   
     // tip = d3.tip().attr('class', 'd3-tip')
     //   .direction('ne')
@@ -97,7 +117,7 @@ ForceGraph.prototype.wrangleData = function() {
       .data(vis.displayData.edges);
     edge
       .enter()
-      .append("line")
+      .insert("line", "circle")
       .merge(edge)
       .attr("class", "edge")
       .style("stroke", "#ccc")
@@ -109,51 +129,15 @@ ForceGraph.prototype.wrangleData = function() {
     node
       .enter()
       .append("circle")
-      .attr("r", 5)
+      .attr("r", 22)
       .attr("class", "node")
-      .merge(node)
-      .attr("fill", "red")
       .call(d3.drag()
         .on("start", dragstart)
         .on("drag", drag)
         .on("end", dragend))
-      //.on('mouseover', tip.show)
-      //.on('mouseout', tip.hide);
+        .merge(node)
+        .attr("fill", function(d) {return d.image == null ? "red" : "url(#img_" + d.id + ")"})
     node.exit().remove();
-    
-    // var legendSquares = vis.svg.selectAll("rect")
-    //   .data(keys);
-    // legendSquares
-    //   .enter()
-    //   .append("rect")
-    //   .merge(legendSquares)
-    //   .attr("x", 0)
-    //   .attr("y", function(d, i) {
-    //     return 20 * i + 20;
-    //   })
-    //   .attr("width", 10)
-    //   .attr("height", 10)
-    //   .style("fill", function (d) {
-    //     return self.colorScale(d);
-    //   })
-    // legendSquares.exit().remove();
-  
-    // var legendLabels = vis.svg.selectAll("text")
-    //   .data(keys);
-    // legendLabels
-    //   .enter()
-    //   .append("text")
-    //   .merge(legendLabels)
-    //   .attr("x", 15)
-    //   .attr("y", function(d, i) {
-    //     return 20 * i + 30;
-    //   })
-    //   .attr("width", 10)
-    //   .attr("height", 10)
-    //   .text(function (d) {
-    //     return d;
-    //   })
-    // legendLabels.exit().remove()
   
     vis.simulation.on("tick", function() {
   
