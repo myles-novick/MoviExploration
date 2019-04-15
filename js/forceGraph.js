@@ -52,10 +52,6 @@ ForceGraph.prototype.wrangleData = function() {
     for (var i = 0; i < limit; i++) {
         var element = vis.filteredData[i];
         var node = {"id": element.id, "name": element.name, "character": element.character, "image": element.image}
-<<<<<<< HEAD
-=======
-        //console.log(element)
->>>>>>> 5c3a8704e0e904b321c7f385248cbd61d17ad472
         vis.displayData.nodes.push(node)
     }
     for (var i = 0; i < limit; i++) {
